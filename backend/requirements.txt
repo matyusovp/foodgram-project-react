@@ -1,0 +1,6 @@
+Django==4.0.6
+djangorestframework
+django-filter
+flake8
+pytest
+isort
