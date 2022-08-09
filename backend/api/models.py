@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 
-from users.models import User
+from users.models import UserProfile
 
 class Ingredient(models.Model):
     # Таблица хранит в себе ингридиенты список(уникальный)
@@ -42,7 +42,7 @@ class Recipe(models.Model):
     # Таблица хранит в себе список рецептов
     # Cвязь с таблицей User
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        UserProfile, on_delete=models.CASCADE,
         related_name='recipes', verbose_name='Пользователь (В рецепте - автор рецепта)'
     )
     # Cвязь с таблицей tags
@@ -79,7 +79,7 @@ class Recipe(models.Model):
 class ShoppingList(models.Model):
     # Таблица, которые хранит связи пользователь- корзина
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        UserProfile, on_delete=models.CASCADE,
         related_name='shoppinglist', verbose_name='Автор'
     )
     recipe = models.ForeignKey(
@@ -91,14 +91,15 @@ class ShoppingList(models.Model):
         ordering = ['-id']
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'recipe']
+                fields=['user', 'recipe'],
+                name = '1unique user-recipe'
             )
         ]
 
 class Favorite(models.Model):
     # Таблица, которые хранит связи пользователь- избранное
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        UserProfile, on_delete=models.CASCADE,
         related_name='favorites', verbose_name='Автор'
     )
     recipe = models.ForeignKey(
@@ -110,7 +111,8 @@ class Favorite(models.Model):
         ordering = ['-id']
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'recipe']
+                fields=['user', 'recipe'],
+                name = '2unique user-recipe'
             )
         ]
 
@@ -134,6 +136,7 @@ class IngredientQnt(models.Model):
         ordering = ['-id']
         constraints = [
             models.UniqueConstraint(
-                fields=['ingredient', 'recipe']
+                fields=['ingredient', 'recipe'],
+                name = 'unique ingr-recipe'
             )
         ]

@@ -4,3 +4,6 @@ django-filter
 flake8
 pytest
 isort
+psycopg2
+pillow
+python-dotenv
