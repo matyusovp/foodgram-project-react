@@ -7,3 +7,4 @@ isort
 psycopg2
 pillow
 python-dotenv
+drf_extra_fields
