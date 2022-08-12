@@ -1,14 +1,17 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from api.models import (ShoppingList, Tag, IngredientQnt, Recipe,
-                        Favorite, Ingredient)
-from users.serializers import (UserProfileSerializer)
+from api.models import (Favorite, Ingredient, IngredientQnt, Recipe,
+                        ShoppingList, Tag)
+from users.serializers import UserProfileSerializer
+
+
 # этот сериализатор, просто чтобы зайти на эндпоинт /ingridients
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit')
+
 
 # этот сериализатор, для отображения в сериализаторе рецептов ингридиентов
 class IngredientQntSerializer(serializers.ModelSerializer):
@@ -22,6 +25,7 @@ class IngredientQntSerializer(serializers.ModelSerializer):
         model = IngredientQnt
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
+
 # Для создания рецепта и добавления в него ингридиентов
 class IngredientСreateSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
@@ -33,25 +37,25 @@ class IngredientСreateSerializer(serializers.ModelSerializer):
         model = IngredientQnt
         fields = ('id', 'amount')
 
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'slug', 'color')
 
-        
+
 class RecipeListSerializer(serializers.ModelSerializer):
     is_favorited = serializers.SerializerMethodField(read_only=True)
-    is_shopping_cart = serializers.SerializerMethodField(read_only=True)   
+    is_shopping_cart = serializers.SerializerMethodField(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     author = UserProfileSerializer(read_only=True)
     ingredients = serializers.SerializerMethodField(read_only=True)
 
-
     class Meta:
         model = Recipe
         fields = (
-            'is_favorited', 'is_shopping_cart', 'author', 'ingredients', 
-             'name', 'image', 'text', 'cooking_time', 'id', 'tags'
+            'is_favorited', 'is_shopping_cart', 'author', 'ingredients',
+            'name', 'image', 'text', 'cooking_time', 'id', 'tags'
         )
 
     def get_ingredients(self, obj):
@@ -70,6 +74,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             return False
         return ShoppingList.objects.filter(
             user=request.user, recipe=obj).exists()
+
 
 class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -132,11 +137,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
+
     class Meta:
         model = Recipe
         fields = (
             'id', 'author', 'image',
-            'name', 'text','tags', 'cooking_time','ingredients'
+            'name', 'text', 'tags', 'cooking_time', 'ingredients'
         )
 
     def validate(self, data):
@@ -181,7 +187,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def create_tags(self, tags, recipe):
         for tag in tags:
-            recipe.tags.add(tag)    
+            recipe.tags.add(tag)
 
     def create_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:

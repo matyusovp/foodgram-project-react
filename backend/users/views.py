@@ -14,7 +14,8 @@ class FollowUserProfileView(APIView):
 
     def get(self, request, id):
         data = {'user': request.user.id, 'following': id}
-        serializer = UserProfileFollowSerializer(data=data, context={'request': request})
+        serializer = UserProfileFollowSerializer(data=data,
+                                                 context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

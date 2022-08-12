@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
+
 
 class UserProfile(AbstractUser):
     email = models.EmailField(
@@ -14,7 +15,7 @@ class UserProfile(AbstractUser):
     last_name = models.CharField(
         max_length=150, verbose_name='Фамилия'
     )
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 

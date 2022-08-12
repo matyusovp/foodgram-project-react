@@ -1,7 +1,8 @@
-from django.db import models
 from django.core.validators import MinValueValidator
+from django.db import models
 
 from users.models import UserProfile
+
 
 class Ingredient(models.Model):
     # Таблица хранит в себе ингридиенты список(уникальный)
@@ -43,7 +44,7 @@ class Recipe(models.Model):
     # Cвязь с таблицей User
     author = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE,
-        related_name='recipes', verbose_name='Пользователь (В рецепте - автор рецепта)'
+        related_name='recipes', verbose_name='автор рецепта'
     )
     # Cвязь с таблицей tags
     tags = models.ManyToManyField(
@@ -92,9 +93,10 @@ class ShoppingList(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
-                name = '1unique user-recipe'
+                name='1unique user-recipe'
             )
         ]
+
 
 class Favorite(models.Model):
     # Таблица, которые хранит связи пользователь- избранное
@@ -112,7 +114,7 @@ class Favorite(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
-                name = '2unique user-recipe'
+                name='2unique user-recipe'
             )
         ]
 
@@ -128,7 +130,8 @@ class IngredientQnt(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
         validators=[
-            MinValueValidator(1, message='Количество должно быть больше 1 штуки!')
+            MinValueValidator(1,
+                              message='Количество должно быть больше 1 штуки!')
         ]
     )
 
@@ -137,6 +140,6 @@ class IngredientQnt(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['ingredient', 'recipe'],
-                name = 'unique ingr-recipe'
+                name='unique ingr-recipe'
             )
         ]
