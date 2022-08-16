@@ -200,14 +200,17 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        instance.ingredients.clear()
-        instance.tags.clear()
         IngredientQnt.objects.filter(recipe=instance).delete()
-        tags = validated_data.get('tags')
-        self.create_tags(tags, instance)
-        ingredients = validated_data.get('ingredients')
-        self.create_ingredients(ingredients, instance)
-        return super().update(instance, validated_data)
+        tags = validated_data.pop('tags')
+        ingredients = validated_data.pop('ingredients')
+        instance = super().update(instance, validated_data)
+        instance.tags.clear()
+        instance.tags.set(tags)
+        instance.ingredients.clear()
+        self.create_ingredients(recipe=instance,
+                                ingredients=ingredients)
+        instance.save()
+        return instance
 
     def to_representation(self, instance):
         request = self.context.get('request')

@@ -14,6 +14,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from django.db.models import Sum
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
@@ -100,15 +101,16 @@ class RecipeViewSet(ModelViewSet):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(
-        methods=['get'], detail=False
+        methods=['get'], detail=False,
+        permission_classes=[IsAuthenticated]
     )
     def download_shopping_cart(self, request):
         ingredients = IngredientQnt.objects.filter(
-            recipe__shopping_list__user=request.user
+            recipe__shoppinglist__user=request.user.id
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
-        ).order_by('ingredient__name').annotate(totals=sum('amount'))
+        ).order_by('ingredient__name').annotate(total=Sum('amount'))
         shopping_cart = '\n'.join([
             f'{ingredient["ingredient__name"]} - {ingredient["total"]}/'
             f'{ingredient["ingredient__measurement_unit"]}'
