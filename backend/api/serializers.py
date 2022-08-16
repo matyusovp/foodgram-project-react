@@ -1,7 +1,8 @@
-from api.models import (Favorite, Ingredient, IngredientQnt, Recipe,
-                        ShoppingList, Tag)
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
+
+from api.models import (Favorite, Ingredient, IngredientQnt, Recipe,
+                        ShoppingList, Tag)
 from users.serializers import UserProfileSerializer
 
 
@@ -201,7 +202,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.ingredients.clear()
         instance.tags.clear()
-        IngredientQnt.objects.filter(recipe=instance).all().delete()
+        IngredientQnt.objects.filter(recipe=instance).delete()
         tags = validated_data.get('tags')
         self.create_tags(tags, instance)
         ingredients = validated_data.get('ingredients')
