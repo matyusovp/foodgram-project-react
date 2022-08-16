@@ -1,12 +1,12 @@
+from api.models import Recipe
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-
-from api.models import Recipe
+from users.mixins import IsSubscribedMixin
 from users.models import Follow, UserProfile
 
 
-class UserProfileSerializer(UserSerializer):
+class UserProfileSerializer(UserSerializer, IsSubscribedMixin):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
@@ -15,13 +15,6 @@ class UserProfileSerializer(UserSerializer):
             'id', 'last_name', 'username', 'first_name',
             'email', 'is_subscribed'
         )
-
-    def get_is_subscribed(self, obj):
-        # только авторизированный может видеть знак подписки
-        request = self.context.get('request')
-        if not request or request.user.is_anonymous:
-            return False
-        return Follow.objects.filter(user=request.user, following=obj).exists()
 
 
 class UserProfileFollowSerializer(serializers.ModelSerializer):
@@ -60,8 +53,7 @@ class RecipeFollowSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class FollowListSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField(read_only=True)
+class FollowListSerializer(serializers.ModelSerializer,  IsSubscribedMixin):
     recipes_count = serializers.SerializerMethodField(read_only=True)
     recipes = serializers.SerializerMethodField(read_only=True)
 
@@ -69,12 +61,6 @@ class FollowListSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ('email', 'id', 'username', 'first_name', 'last_name',
                   'is_subscribed', 'recipes', 'recipes_count')
-
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        if not request or request.user.is_anonymous:
-            return False
-        return Follow.objects.filter(user=request.user, following=obj).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')

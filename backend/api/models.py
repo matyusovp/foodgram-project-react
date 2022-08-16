@@ -1,11 +1,9 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-
 from users.models import UserProfile
 
 
 class Ingredient(models.Model):
-    # Таблица хранит в себе ингридиенты список(уникальный)
     name = models.CharField(
         max_length=150, unique=True, verbose_name='Название'
     )
@@ -21,7 +19,6 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    # Таблица хранит в сете теги список (уникальный)
     name = models.CharField(
         max_length=200, unique=True, verbose_name='Название'
     )
@@ -40,17 +37,13 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    # Таблица хранит в себе список рецептов
-    # Cвязь с таблицей User
     author = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE,
         related_name='recipes', verbose_name='автор рецепта'
     )
-    # Cвязь с таблицей tags
     tags = models.ManyToManyField(
         Tag, verbose_name='Теги'
     )
-    # Cвязь с таблицей Ingredient
     ingredients = models.ManyToManyField(
         Ingredient, verbose_name='Список ингредиентов'
     )
@@ -78,7 +71,6 @@ class Recipe(models.Model):
 
 
 class ShoppingList(models.Model):
-    # Таблица, которые хранит связи пользователь- корзина
     user = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE,
         related_name='shoppinglist', verbose_name='Автор'
@@ -99,7 +91,6 @@ class ShoppingList(models.Model):
 
 
 class Favorite(models.Model):
-    # Таблица, которые хранит связи пользователь- избранное
     user = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE,
         related_name='favorites', verbose_name='Автор'
@@ -120,7 +111,6 @@ class Favorite(models.Model):
 
 
 class IngredientQnt(models.Model):
-    # Таблица хранит в себе данные по количеству ингридиентов для рецептов
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, verbose_name='Рецепт'
     )
