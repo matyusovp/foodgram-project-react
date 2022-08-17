@@ -1,8 +1,7 @@
-from drf_extra_fields.fields import Base64ImageField
-from rest_framework import serializers
-
 from api.models import (Favorite, Ingredient, IngredientQnt, Recipe,
                         ShoppingList, Tag)
+from drf_extra_fields.fields import Base64ImageField
+from rest_framework import serializers
 from users.serializers import UserProfileSerializer
 
 

@@ -6,6 +6,7 @@ from api.permissions import IsAuthorOrReadOnly
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeListSerializer, RecipeWriteSerializer,
                              ShoppingListSerializer, TagSerializer)
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -14,7 +15,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from django.db.models import Sum
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
@@ -43,62 +43,47 @@ class RecipeViewSet(ModelViewSet):
             return RecipeListSerializer
         return RecipeWriteSerializer
 
-    @action(
-        detail=True,
-        methods=['GET', 'DELETE'],
-        permission_classes=[IsAuthenticated],
-        url_path='favorite'
-    )
-    # сделал удаление и пост в 1 методе. Или favorite И shopping_cart тоже нужно свести в 1 метод?
-    def favorite(self, request, pk):
+    def add_and_delete(self, request, pk, serializer, model):
         recipe = get_object_or_404(Recipe, pk=pk)
         user = request.user
-        if request.method == 'GET':
-            favorite_recipe, created = Favorite.objects.get_or_create(
+        if request.method == 'POST':
+            recipe, created = model.objects.get_or_create(
                 user=user, recipe=recipe
             )
-            if created is True:
-                serializer = FavoriteSerializer()
+            if created:
+                serializer = serializer()
                 return Response(
-                    serializer.to_representation(instance=favorite_recipe),
+                    serializer.to_representation(instance=recipe),
                     status=status.HTTP_201_CREATED
                 )
+            return Response(
+                {'errors': 'Рецепт уже добавлен'},
+                status=status.HTTP_201_CREATED
+            )
         if request.method == 'DELETE':
-            Favorite.objects.filter(
-                user=user,
-                recipe=recipe
+            model.objects.filter(
+                user=user, recipe=recipe
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         detail=True,
-        methods=['GET', 'DELETE'],
+        methods=['DELETE', 'POST'],
+        permission_classes=[IsAuthenticated],
+        url_path='favorite'
+    )
+    def favorite(self, request, pk):
+        return (self.add_and_delete(request, pk, FavoriteSerializer, Favorite))
+
+    @action(
+        detail=True,
+        methods=['DELETE', 'POST'],
         permission_classes=[IsAuthenticated]
     )
     def shopping_cart(self, request, pk):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        user = request.user
-        if request.method == 'GET':
-            recipe, created = ShoppingList.objects.get_or_create(
-                user=user, recipe=recipe
-            )
-            if created is True:
-                serializer = ShoppingListSerializer()
-                return Response(
-                    serializer.to_representation(instance=recipe),
-                    status=status.HTTP_201_CREATED
-                )
-            return Response(
-                {'errors': 'Рецепт уже в корзине покупок'},
-                status=status.HTTP_201_CREATED
-            )
-        if request.method == 'DELETE':
-            ShoppingList.objects.filter(
-                user=user, recipe=recipe
-            ).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return (self.add_and_delete(request, pk, ShoppingListSerializer,
+                ShoppingList))
 
     @action(
         methods=['get'], detail=False,
