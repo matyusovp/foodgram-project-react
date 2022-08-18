@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 from api.models import (Favorite, Ingredient, IngredientQnt, Recipe,
                         ShoppingList, Tag)
-
 from users.serializers import UserProfileSerializer
 
 
