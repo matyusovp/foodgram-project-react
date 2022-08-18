@@ -133,3 +133,4 @@ dmypy.json
 frontend
 docs
 .vscode/
+.isort.cfg
