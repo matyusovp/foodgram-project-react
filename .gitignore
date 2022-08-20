@@ -130,7 +130,6 @@ dmypy.json
 
 # .idea
 .idea
-frontend
-docs
+
+
 .vscode/
-.isort.cfg
