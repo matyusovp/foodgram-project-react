@@ -23,7 +23,7 @@ jobs:
         pip install -r backend/requirements.txt 
     - name: Test with flake8 and django tests
       run: |
-        python -m flake8
+        python -m flake8 backend
   
   build_and_push_to_docker_hub:
     if: github.ref == 'refs/heads/master'
@@ -45,7 +45,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: denissivko/foodgram:latest
+          tags: 4071296/backend:latest
   
   deploy:
     if: github.ref == 'refs/heads/master'
