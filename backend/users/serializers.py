@@ -54,7 +54,7 @@ class RecipeFollowSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class FollowListSerializer(serializers.ModelSerializer,  IsSubscribedMixin):
+class FollowListSerializer(serializers.ModelSerializer, IsSubscribedMixin):
     recipes_count = serializers.SerializerMethodField(read_only=True)
     recipes = serializers.SerializerMethodField(read_only=True)
 
