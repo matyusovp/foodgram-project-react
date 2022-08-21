@@ -8,5 +8,4 @@ psycopg2
 pillow
 python-dotenv
 drf_extra_fields
-gunicorn
-djoser
+gunicorn==19.9.0
