@@ -20,7 +20,7 @@ from api.serializers import (FavoriteSerializer, IngredientSerializer,
 
 class TagsViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAdminOrReadOnly,)
     serializer_class = TagSerializer
 
 
@@ -28,7 +28,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = IngredientSerializer
-    filter_backends = [IngredientFilter]
+    filter_backends = (IngredientFilter,)
     search_fields = ('^name',)
 
 
