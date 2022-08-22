@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.pagination import PageNumber
+from api.pagination import PageNumberPagination
 from users.models import Follow, UserProfile
 from users.serializers import FollowListSerializer, UserProfileFollowSerializer
 
@@ -31,7 +31,7 @@ class FollowUserProfileView(APIView):
 
 
 class FollowListView(ListAPIView):
-    pagination_class = PageNumber
+    pagination_class = PageNumberPagination
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

@@ -12,7 +12,7 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.models import (Favorite, Ingredient, IngredientQnt, Recipe,
                         ShoppingList, Tag)
 from api.pagination import PageNumberPagination
-from api.permissions import IsAuthorOrReadOnly
+from api.permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeListSerializer, RecipeWriteSerializer,
                              ShoppingListSerializer, TagSerializer)
@@ -34,7 +34,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = (IsAuthorOrReadOnly | IsAdminOrReadOnly,)
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
     pagination_class = PageNumberPagination

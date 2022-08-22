@@ -24,7 +24,7 @@ class IngredientQntSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
-class IngredientСreateSerializer(serializers.ModelSerializer):
+class IngredientCreateSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all()
     )
@@ -128,7 +128,7 @@ class ShoppingListSerializer(serializers.ModelSerializer):
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
-    ingredients = IngredientСreateSerializer(many=True)
+    ingredients = IngredientCreateSerializer(many=True)
     author = UserProfileSerializer(read_only=True)
     image = Base64ImageField()
     tags = serializers.PrimaryKeyRelatedField(
