@@ -1,5 +1,5 @@
-Django==4.0.6
-djangorestframework
+Django==3.2.15
+djangorestframework==3.13.1
 django-filter
 flake8
 pytest
