@@ -148,3 +148,6 @@ python manage.py migrate
 python manage.py createsuperuser
 ##### Запустить web-сервер на локальной машине:
 python manage.py runserver --settings=foodgram.settings-dev
+
+
+Автор - Матюсов Павел tg - bizewka
