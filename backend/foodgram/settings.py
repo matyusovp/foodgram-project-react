@@ -9,9 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', default='django-insecure-iqbwl43gbu#+t=*4zi942pfk0e!v8c80rmh%1wx^6l7d+d+3h0')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
