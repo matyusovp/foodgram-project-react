@@ -1,4 +1,4 @@
-version: '3.8'
+version: '2.6'
 services:
 
   db:
@@ -14,7 +14,7 @@ services:
     volumes:
       - static_value:/code/static/
       - media_value:/code/media/
-      - redoc:/app/api/docs/
+      - redoc:/code/api/docs/
     depends_on:
       - db
     env_file:
@@ -30,7 +30,6 @@ services:
     ports:
       - 80:80
     volumes:
-
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
       - static_value:/var/html/static/
