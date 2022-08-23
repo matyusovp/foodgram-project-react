@@ -13,7 +13,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+ALLOWED_ORIGINS = ['http://130.193.43.108/admin/', 'http://*', 'https://*']
+CSRF_TRUSTED_ORIGINS = ALLOWED_ORIGINS.copy()
 
 INSTALLED_APPS = [
     'django.contrib.admin',
