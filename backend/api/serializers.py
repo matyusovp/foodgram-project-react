@@ -156,11 +156,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                     'ingredients': 'Вы уже добавили этот ингредиент!'
                 })
             ingredients_list.append(ingredient_id)
-            amount = ingredient['amount']
-            if int(amount) <= 0:
-                raise serializers.ValidationError({
-                    'amount': 'Количество ингредиента должно быть больше нуля!'
-                })
+
         tags = data['tags']
         if not tags:
             raise serializers.ValidationError({
