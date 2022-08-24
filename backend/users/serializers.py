@@ -65,10 +65,15 @@ class FollowListSerializer(serializers.ModelSerializer, IsSubscribedMixin):
 
     def get_recipes(self, obj):
         request = self.context.get('request')
+        recipes_limit = request.query_params.get('recipes_limit')
         if not request or request.user.is_anonymous:
             return False
+        if recipes_limit:
+            recipes = Recipe.objects.filter(
+                author=obj.author_id).all()[:(int(recipes_limit))]
+        else:
+            recipes = Recipe.objects.filter(author=obj.author_id).all()
         context = {'request': request}
-        recipes = obj.recipes.all()
         return RecipeFollowSerializer(
             recipes, many=True, context=context).data
 
